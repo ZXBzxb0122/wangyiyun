@@ -1,19 +1,44 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+
+const login =() =>import("@/views/login")
+const HomeView =() => import('../views/home/HomeView.vue')
+const myView =() => import('../views/myView.vue')
+const concernView =() =>import("../views/concernView");
+const itemMusic =() =>import("../views/home/itemMusic")
+import store from '@/store/index'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    redirect:'/home'
+  },
+  {
+    path: '/home',
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/my',
+    //路由守卫
+    beforeEnter:(to,from,next) =>{
+      if(store.state.isLogin || store.state.token || localStorage.getItem('token')){
+        next()
+      }else{
+        next('/login')
+      }
+    },
+    component: myView,
+  },
+  {
+    path: '/concern',
+    component: concernView
+  },
+  {
+    path: '/itemMusic',
+    component: itemMusic
+  },
+  {
+    path: '/login',
+    component: login
   }
 ]
 
@@ -21,5 +46,13 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-
+router.beforeEach((to,from)=>{
+  // console.log(to);
+  if(to.path === '/login'){
+   store.state.isShowTabBar = false
+  }else store.state.isShowTabBar = to.path !== '/itemMusic';
+  if (to.path === '/login'){
+    store.state.isShowPlayer = false
+  }
+})
 export default router

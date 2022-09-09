@@ -3,25 +3,73 @@
     <img :src="musicDetail.al.picUrl" alt="" class="bgImg">
     <div class="detailTop">
       <div class="left">
-        <svg t="1662640493519" class="icon"  viewBox="0 0 1024 1024"
+        <svg t="1662640493519" @click="backHome" class="icon"  viewBox="0 0 1024 1024"
              version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6032" width="32" height="32"><path d="M142.805333 265.173333A58.666667 58.666667 0 1 0 59.861333 348.16l410.666667 410.666667a58.666667 58.666667 0 0 0 82.944 0l410.666667-410.666667a58.666667 58.666667 0 1 0-82.944-82.986667L512 634.368 142.805333 265.173333z" p-id="6033" fill="#ffffff"></path></svg>
       </div>
       <div class="center">
         <Vue3Marquee class="name" :duration="5" :pauseOnHover="true" :pauseOnClick="true">{{musicDetail.name}}</Vue3Marquee>
         <span class="arName">{{musicDetail.ar[0].name}}</span>
         <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-a-rightarrow-3"></use>
-      </svg>
+          <use xlink:href="#icon-a-rightarrow-3"></use>
+        </svg>
       </div>
       <div class="right">
         <svg t="1662640685059" class="icon" viewBox="0 0 1024 1024"
              version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7086" width="32" height="32"><path d="M763.84 896c-47.128 0-85.333-38.205-85.333-85.333s38.205-85.333 85.333-85.333c47.128 0 85.333 38.205 85.333 85.333 0 47.128-38.205 85.333-85.333 85.333M329.92 558.848c-14.895 26.231-42.641 43.638-74.453 43.638-47.128 0-85.333-38.205-85.333-85.333 0-16.097 4.457-31.152 12.204-44 14.935-24.769 42.098-41.333 73.13-41.333 47.128 0 85.333 38.205 85.333 85.333 0 15.317-4.035 29.691-11.101 42.117M763.84 128c47.128 0 85.333 38.205 85.333 85.333s-38.205 85.333-85.333 85.333c-47.128 0-85.333-38.205-85.333-85.333 0-47.128 38.205-85.333 85.333-85.333M763.84 682.667c-0.021 0-0.047 0-0.072 0-39.16 0-74.203 17.626-97.628 45.378l-289.885-167.063c4.932-13.101 7.787-28.245 7.787-44.055 0-0.105 0-0.209 0-0.314 0-0.072 0-0.177 0-0.281 0-15.81-2.855-30.953-8.077-44.942l295.544-169.566c23.265 24.363 56.001 39.509 92.275 39.509 0.020 0 0.039 0 0.059 0 70.689 0 127.997-57.308 127.997-128 0-70.692-57.308-128-128-128-70.692 0-128 57.308-128 128 0 18.965 4.224 36.907 11.627 53.099l-292.288 168.747c-23.653-28.833-59.285-47.084-99.18-47.084-70.692 0-128 57.308-128 128 0 0.188 0 0.376 0.001 0.564-0.001 0.123-0.001 0.304-0.001 0.484 0 70.692 57.308 128 128 128 39.895 0 75.526-18.251 99.001-46.86l289.373 166.752c-5.397 13.568-8.529 29.29-8.533 45.743 0 70.582 57.308 127.889 128 127.889 70.692 0 128-57.308 128-128 0-70.692-57.308-128-128-128z" fill="#ffffff" p-id="7087"></path></svg>
       </div>
     </div>
-    <div class="detailCenter">
-      <img src="../../assets/needle-ab.png" alt="" class="img_needle">
+    <div class="detailCenter" v-show="!isShowLyric" @click="isShowLyric = true">
+      <img src="../../assets/needle-ab.png" alt="" class="img_needle" :class="{img_needle_active:isPlayer}">
       <img src="../../assets/disc-plus.png" alt="" class="img_disc">
-      <img :src="musicDetail.al.picUrl" alt="" class="img_ar">
+      <img :src="musicDetail.al.picUrl" alt="" class="img_ar"
+           :class="{img_ar_active:isPlayer,img_ar_paused:!isPlayer}">
+    </div>
+    <div class="detailLyric" ref="detailLyric" v-show="isShowLyric" @click="isShowLyric = false">
+      <p v-for="item in lyric" :key="item"
+         :class="{active:(currentTime * 1000>item.time && currentTime * 1000<item.pre)}">
+        {{item.lrc}}</p>
+    </div>
+    <div class="detailFooter">
+      <div class="footerTop">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-aixin"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-download"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-changpian"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-xiaoxi1"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-androidgengduo"></use>
+        </svg>
+      </div>
+      <div class="footerCenter">
+
+      </div>
+      <div class="footer">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-danxunhuan"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-shangyishou1"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true" @click="player" v-if="isPlayer">
+          <use xlink:href="#icon-zanting"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true" @click="player" v-else>
+          <use xlink:href="#icon-bofang1"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-xiayishou1"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-liebiao"></use>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
@@ -29,12 +77,76 @@
 <script>
 import { Vue3Marquee } from 'vue3-marquee'
 import 'vue3-marquee/dist/style.css'
+import {mapMutations, mapState} from "vuex";
 export default {
   name: "MusicDetail",
   components:{
     Vue3Marquee
   },
-  props:['musicDetail']
+  data(){
+    return{
+      isShowLyric:false
+    }
+  },
+  computed:{
+    ...mapState(['musicLyric','currentTime']),
+    lyric(){
+      let arr;
+      if(this.musicLyric.lyric){
+        // /[(\r\n)\r\n]+/ 正则表达式
+        // 进行拆分
+        arr = this.musicLyric.lyric.split(/[(\r\n)\r\n]+/).map((item,i) =>{
+          // 分
+          let min = item.slice(1,3);
+          // 秒
+          let sec = item.slice(4,6);
+          // 毫秒
+          let mill = item.slice(7,10);
+          // 歌词
+          let lrc = item.slice(11,item.length)
+          //时间
+          let time = parseInt(min)*60*1000+parseInt(sec)*1000+parseInt(mill)
+          if(isNaN(Number(mill))){
+            mill = item.slice(7,9);
+            lrc = item.slice(10,item.length)
+            time = parseInt(min)*60*1000+parseInt(sec)*1000+parseInt(mill)
+          }
+          return {min,sec,mill,lrc,time}
+        })
+        arr.forEach((item,i) =>{
+          if(i === arr.length-1){
+            item.pre = 0
+          }else{
+            item.pre = arr[i+1].time
+          }
+        })
+      }
+      // console.log(arr);
+      return arr
+    }
+  },
+  methods:{
+    backHome(){
+      this.isShowLyric = false
+      this.UpdateShowDetail()
+    },
+    ...mapMutations(['UpdateShowDetail']),
+  },
+  mounted() {
+  },
+  watch:{
+    currentTime(){
+      setTimeout(()=>{
+        let p =document.querySelector('p.active')
+        // console.log([p]);
+        if(p.offsetTop > 300){
+          this.$refs.detailLyric.scrollTop = p.offsetTop - 300
+        }
+        // console.log([this.$refs.detailLyric]);
+      },2000)
+    }
+  },
+  props:['musicDetail','player','isPlayer']
 }
 </script>
 
@@ -42,18 +154,18 @@ export default {
 .playerDetail {
   width: 100%;
   height: 100%;
-  padding: 0 10px;
 
   .bgImg {
     width: 100%;
     height: 100%;
     position: absolute;
     z-index: -1;
-    filter: blur(30px); //背景虚化
+    filter: blur(20px); //背景虚化
   }
 
   .detailTop {
     height: 49px;
+    padding: 0 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -61,6 +173,8 @@ export default {
       width: 20%;
     }
     .center {
+      width: 30%;
+      margin-top: 10px;
       text-align: center;
       .name {
         font-size: 0.35rem;
@@ -85,7 +199,8 @@ export default {
   }
   .detailCenter{
     width: 100%;
-    height: 9rem;
+    height: 10.2rem;
+    padding: 0 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -94,24 +209,107 @@ export default {
       width: 2rem;
       height: 3rem;
       position: absolute;
-      left: 46%;
+      top: 2%;
+      left: 43%;
       transform-origin: 0 0;
-      transform: rotate(-10deg);
+      transform: rotate(-25deg);
+      transition: all 2s;
+    }
+    .img_needle_active{
+      width: 2rem;
+      height: 3rem;
+      position: absolute;
+      left: 43%;
+      transform-origin: 0 0;
+      transform: rotate(-5deg);
       transition: all 2s;
     }
     .img_disc{
-      width: 5rem;
-      height: 5rem;
+      width: 5.5rem;
+      height: 5.5rem;
       position: absolute;
-      bottom: 2.3rem;
+      bottom: 3rem;
       z-index: -1;
     }
     .img_ar{
-      width: 3.2rem;
-      height: 3.2rem;
+      width: 3.5rem;
+      height: 3.5rem;
       border-radius: 50%;
       position: absolute;
-      bottom: 3.14rem;
+      bottom: 4rem;
+      animation: rotate_ar 10s linear infinite;
+    }
+    .img_ar_active{
+      animation-play-state: running;
+    }
+    .img_ar_paused{
+      animation-play-state: paused;
+    }
+    @keyframes rotate_ar{
+      0%{
+        transform: rotateZ(0deg);
+      }
+      100%{
+        transform: rotateZ(360deg);
+      }
+    }
+  }
+  .detailLyric{
+    width: 100%;
+    height: 10rem;
+    //padding-top: 10px;
+    padding: 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: scroll;
+    p{
+      color: #cccccc;
+      margin-bottom: 0.4rem;
+      //overflow: hidden;
+    }
+    .active{
+      color: #ffffff;
+    }
+  }
+  .detailFooter{
+    width: 100%;
+    height: 2rem;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    bottom: 0.2rem;
+    .footerTop{
+      width: 100%;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .icon{
+        fill: #fff;
+        font-size: 0.3rem;
+      }
+    }
+    .footer{
+      width: 100%;
+      display: flex;
+      padding: 0 20px;
+      justify-content: space-between;
+      align-items: center;
+      .icon{
+        fill: #fff;
+        font-size: 0.3rem;
+      }
+      .icon:nth-child(3){
+        //fill: #fff;
+        font-size: 0.45rem;
+      }
+      .icon:nth-child(5){
+        //fill: #fff;
+        font-size: 0.25rem;
+      }
     }
   }
 }

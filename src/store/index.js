@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import {getInfo, getLoginInfo} from "@/request/api/login";
+import {getItemMusicLyric} from "@/request/api/musicItemList";
 
 export default createStore({
   state: {
@@ -9,22 +10,24 @@ export default createStore({
     token:'',
     user:{}, //用户信息
     playerList:[{ //播放列表
-      name:"追光者",
+      name:"我也曾是你 (feat. 王紫璇)",
       al:{
-        id: 35644242,
-        name: "夏至未至 影视原声带",
-        pic: 19149094509535910,
-        picUrl: "https://p1.music.126.net/ZZAQGWl9mR7g5xCyWWH3Pw==/19149094509535913.jpg",
-        pic_str: "19149094509535913",
+        id: 151011010,
+        name: "我也曾是你 (feat. 王紫璇)",
+        pic: 109951167847807250,
+        picUrl: "https://p2.music.126.net/asMzMZA7lJbWR4pcLghPwQ==/109951167847807241.jpg",
+        pic_str: "109951167847807241",
       },
       ar:[{
-        name:"岑宁儿",
+        name: "于文文",
       }],
-      id:445703380
+      id:1978636299
     }],
     playerListIndex:0, //播放列表下标
-    isPlayer:true, // 播放暂停
-    showDetail:false
+    isPlayer:false, // 是否正在播放
+    showDetail:false, //是否暂时音乐详情页
+    musicLyric:{}, //歌词
+    currentTime:0,//当前歌曲播放的时间
   },
   getters: {
 
@@ -52,6 +55,13 @@ export default createStore({
     },
     UpdateShowDetail(state){
       state.showDetail = !state.showDetail
+    },
+    UpdateMusicLyric(state,value){
+      state.musicLyric = value
+    },
+    UpdateCurrentTime(state,value){
+      state.currentTime = value
+      // console.log(state.currentTime);
     }
   },
   actions: {
@@ -64,6 +74,11 @@ export default createStore({
     //   let res = await getInfo(value)
     //   context.state.Cookies = await res.data.cookie
     // }
+    getLyric:async function(context,value){
+      let res = await getItemMusicLyric(value)
+      // console.log(res);
+      context.commit('UpdateMusicLyric',res.data.lrc)
+    }
   },
   modules: {
   }

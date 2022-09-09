@@ -10,10 +10,10 @@
     </div>
     <div class="audioIcon">
       <svg class="icon" aria-hidden="true" @click="player" v-if="isPlayer">
-        <use xlink:href="#icon-bofang1"></use>
+        <use xlink:href="#icon-zanting"></use>
       </svg>
       <svg class="icon" aria-hidden="true" @click="player" v-else>
-        <use xlink:href="#icon-zanting"></use>
+        <use xlink:href="#icon-bofang1"></use>
       </svg>
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-24gf-playlist2"></use>
@@ -23,7 +23,7 @@
     <van-popup
         v-model:show="showDetail"
         :style="{ height: '100%',width:'100%' }">
-      <music-detail :musicDetail="playerList[playerListIndex]"/>
+      <music-detail :musicDetail="playerList[playerListIndex]" :player="player" :isPlayer="isPlayer"/>
     </van-popup>
   </div>
 </template>
@@ -33,35 +33,60 @@ import {mapState,mapMutations} from "vuex";
 import MusicDetail from "@/components/itemMusic/MusicDetail";
 export default {
   name: "audioPlayer",
+  data(){
+    return{
+      interval:0
+    }
+  },
   components:{
     MusicDetail
   },
   computed:{
     ...mapState(['playerList','playerListIndex','isPlayer','showDetail'])
   },
+  mounted() {
+    this.$store.dispatch("getLyric",this.playerList[this.playerListIndex].id)
+    if(this.$refs.audio.paused) {
+      this.updateTime()
+    }else{
+      clearInterval(this.interval) //音乐暂停清除定时器
+    }
+  },
+  updated() {
+    this.$store.dispatch("getLyric",this.playerList[this.playerListIndex].id)
+  },
   methods:{
     player(){
+      // 判断音乐是否播放
       if(this.$refs.audio.paused){
         this.$refs.audio.play()
-        this.UpdatePlayer(false)
+        this.UpdatePlayer(true)
+        this.updateTime() //音乐播放调用定时器
       }else{
         this.$refs.audio.pause()
-        this.UpdatePlayer(true)
+        this.UpdatePlayer(false)
+        clearInterval(this.interval) //音乐暂停清除定时器
       }
     },
-    ...mapMutations(['UpdatePlayer','UpdateShowDetail'])
+    updateTime(){
+      this.interval = setInterval(() =>{
+        this.UpdateCurrentTime(this.$refs.audio.currentTime)
+      },1000)
+    },
+    ...mapMutations(['UpdatePlayer','UpdateShowDetail','UpdateCurrentTime'])
   },
   watch:{
     playerListIndex(){ //监听下标，如果发生改变就自动播放音乐
       this.$refs.audio.autoplay = true
       if (this.$refs.audio.pause){ //如果暂停状态播放
-        this.UpdatePlayer(false)
+        this.UpdatePlayer(true)
       }
     },
+    // 监听音乐是否播放
     playerList(){
       if(this.isPlayer){
         this.$refs.audio.autoplay = true
-        this.UpdatePlayer(false)
+        this.UpdatePlayer(true)
       }
     }
   }

@@ -1,4 +1,5 @@
 import service from "@/request";
+// 用户手机登录
 export function getLoginInfo(data){
   return service({
     method:'GET',
@@ -6,6 +7,7 @@ export function getLoginInfo(data){
     // url:'/register/anonimous'
   })
 }
+// 获取用户信息
 export function getUserInfo(data){
   return service({
     method:'GET',

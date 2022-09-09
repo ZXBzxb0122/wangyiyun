@@ -52,8 +52,9 @@ export default {
     playMusic(index){
       this.UpdatePlayerList(this.songs)
       this.UpdatePlayerListIndex(index)
+      this.UpdateShowDetail()
     },
-    ...mapMutations(['UpdatePlayerList','UpdatePlayerListIndex'])
+    ...mapMutations(['UpdatePlayerList','UpdatePlayerListIndex','UpdateShowDetail'])
   }
 }
 </script>
@@ -124,6 +125,7 @@ export default {
         padding-left: 6px;
         align-items: center;
         span {
+          width: 10px;
           color: #cccccc;
         }
         .itemTitle {

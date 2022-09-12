@@ -18,6 +18,9 @@ import MainTabBar from "@/components/Tabbar/MainTabBar";
     components: {
       MainTabBar,
       audioPlayer
+    },
+    mounted() {
+      this.$store.dispatch("getLoginUserInfo")
     }
   }
 </script>
@@ -26,6 +29,9 @@ import MainTabBar from "@/components/Tabbar/MainTabBar";
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+body{
+  background-color: #f6f6f6;
 }
 #app{
   height: 100vh;

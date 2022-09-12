@@ -14,9 +14,9 @@ export function getUserInfo(data){
     url: `/user/detail?uid=${data}`
   })
 }
-export function getInfo(cookies){
-  return service({
-    method:'GET',
-    url:`/user/account?cookie=${cookies}`
-  })
-}
+// export function getLoginUserInfo(id){
+//   return service({
+//     method:'GET',
+//     url:`/user/detail?uid=${id}`
+//   })
+// }

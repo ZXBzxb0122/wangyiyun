@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const login =() =>import("@/views/login")
 const HomeView =() => import('../views/home/HomeView.vue')
 const myView =() => import('../views/myView.vue')
-const concernView =() =>import("../views/concernView");
+const search =() =>import("../views/search");
 const itemMusic =() =>import("../views/home/itemMusic")
 import store from '@/store/index'
 
@@ -29,8 +29,8 @@ const routes = [
     component: myView,
   },
   {
-    path: '/concern',
-    component: concernView
+    path: '/search',
+    component: search
   },
   {
     path: '/itemMusic',
@@ -48,10 +48,10 @@ const router = createRouter({
 })
 router.beforeEach((to,from)=>{
   // console.log(to);
-  if(to.path === '/login'){
+  if(to.path === '/login' || to.path === '/search'){
    store.state.isShowTabBar = false
   }else store.state.isShowTabBar = to.path !== '/itemMusic';
-  if (to.path === '/login'){
+  if (to.path === '/login' || to.path === '/home' || to.path === '/my'){
     store.state.isShowPlayer = false
   }
 })

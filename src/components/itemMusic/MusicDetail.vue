@@ -30,9 +30,12 @@
         {{item.lrc}}</p>
     </div>
     <div class="detailFooter">
-      <div class="footerTop">
-        <svg class="icon" aria-hidden="true">
+      <div class="footerTop" v-if="!isShowLyric">
+        <svg class="icon" aria-hidden="true" @click="iconClick" v-if="isShowLikeIcon">
           <use xlink:href="#icon-aixin"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true" @click="iconClick" v-else style="fill: #ff0000">
+          <use xlink:href="#icon-aixin1"></use>
         </svg>
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-download"></use>
@@ -47,14 +50,24 @@
           <use xlink:href="#icon-androidgengduo"></use>
         </svg>
       </div>
+      <div class="footerTop2" v-else>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-bofangMV"></use>
+        </svg>
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-androidgengduo"></use>
+        </svg>
+      </div>
       <div class="footerCenter">
-
+        <span>{{formatSeconds(currentTime)}}</span>
+        <input type="range" class="range" min="0" :max="duration" v-model="currentTime" :step="step">
+        <span>{{formatSeconds(duration)}}</span>
       </div>
       <div class="footer">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-danxunhuan"></use>
         </svg>
-        <svg class="icon" aria-hidden="true">
+        <svg class="icon" aria-hidden="true" @click="toPlayer(-1)">
           <use xlink:href="#icon-shangyishou1"></use>
         </svg>
         <svg class="icon" aria-hidden="true" @click="player" v-if="isPlayer">
@@ -63,7 +76,7 @@
         <svg class="icon" aria-hidden="true" @click="player" v-else>
           <use xlink:href="#icon-bofang1"></use>
         </svg>
-        <svg class="icon" aria-hidden="true">
+        <svg class="icon" aria-hidden="true" @click="toPlayer(1)">
           <use xlink:href="#icon-xiayishou1"></use>
         </svg>
         <svg class="icon" aria-hidden="true">
@@ -83,13 +96,16 @@ export default {
   components:{
     Vue3Marquee
   },
+  props:['musicDetail','player','isPlayer','updateDuration'],
   data(){
     return{
-      isShowLyric:false
+      isShowLyric:false,
+      step:0,
+      isShowLikeIcon:true,
     }
   },
   computed:{
-    ...mapState(['musicLyric','currentTime']),
+    ...mapState(['musicLyric','currentTime','playerList','playerListIndex','duration']),
     lyric(){
       let arr;
       if(this.musicLyric.lyric){
@@ -114,8 +130,8 @@ export default {
           return {min,sec,mill,lrc,time}
         })
         arr.forEach((item,i) =>{
-          if(i === arr.length-1){
-            item.pre = 0
+          if(i === arr.length - 1 || isNaN(arr[i+1].time)){
+            item.pre = 100000
           }else{
             item.pre = arr[i+1].time
           }
@@ -123,6 +139,9 @@ export default {
       }
       // console.log(arr);
       return arr
+    },
+    getStep(){
+      this.step = document.querySelector('rang').width / this.duration
     }
   },
   methods:{
@@ -130,23 +149,73 @@ export default {
       this.isShowLyric = false
       this.UpdateShowDetail()
     },
-    ...mapMutations(['UpdateShowDetail']),
+    //点击切换歌曲
+    toPlayer(num){
+      let index = this.playerListIndex+num
+      if(index < 0){
+          index = this.playerList.length - 1
+      }else if(index === this.playerList.length){
+        index = 0
+      }
+      this.UpdatePlayerListIndex(index)
+    },
+    formatSeconds(value) {
+      let secondTime = parseInt(value);// 秒
+      let minuteTime = 0;// 分
+      if(secondTime >= 60) {//如果秒数大于60，将秒数转换成整数
+        //获取分钟，除以60取整数，得到整数分钟
+        minuteTime = parseInt(secondTime) / 60;
+        //获取秒数，秒数取余，得到整数秒数
+        secondTime = parseInt(secondTime) % 60;
+      }
+      let result = '';
+      if(secondTime >=0 && secondTime < 10){
+        result = "0" + parseInt(secondTime) + ""
+      }else{
+        result = "" + parseInt(secondTime) + ""
+      }
+      if(minuteTime >=0 && minuteTime < 10){
+        result = "0" + parseInt(minuteTime) + ":" + result
+      }else{
+        result = "" + parseInt(minuteTime) + ":" + result
+      }
+      // console.log('result',result);
+      return result;
+    },
+    iconClick(){
+      this.isShowLikeIcon = !this.isShowLikeIcon
+    },
+    ...mapMutations(['UpdateShowDetail','UpdatePlayerListIndex']),
+  },
+  updated() {
+    this.updateDuration()
   },
   mounted() {
+    this.updateDuration()
+    // console.log(this.duration);
   },
   watch:{
-    currentTime(){
-      setTimeout(()=>{
+    currentTime(newValue){
+      // setTimeout(()=>{
         let p =document.querySelector('p.active')
         // console.log([p]);
+      if(p){
         if(p.offsetTop > 300){
           this.$refs.detailLyric.scrollTop = p.offsetTop - 300
         }
+      }
+      if(newValue === this.duration){
+        if(this.playerListIndex===this.playerList.length-1){
+          this.UpdatePlayerListIndex(0)
+          this.player()
+        }else{
+          this.UpdatePlayerListIndex(this.playerListIndex + 1)
+        }
+      }
         // console.log([this.$refs.detailLyric]);
-      },2000)
-    }
+      // },2000)
+    },
   },
-  props:['musicDetail','player','isPlayer']
 }
 </script>
 
@@ -257,8 +326,8 @@ export default {
   .detailLyric{
     width: 100%;
     height: 10rem;
-    //padding-top: 10px;
-    padding: 10px 0 10px;
+    margin-top: 10px;
+    padding:  0 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -274,7 +343,7 @@ export default {
   }
   .detailFooter{
     width: 100%;
-    height: 2rem;
+    height: 2.5rem;
     padding: 0 10px;
     display: flex;
     flex-direction: column;
@@ -290,6 +359,42 @@ export default {
       .icon{
         fill: #fff;
         font-size: 0.3rem;
+      }
+    }
+    .footerTop2{
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .icon{
+        fill: #ffffff;
+      }
+    }
+    .footerCenter{
+      width: 100%;
+      height: 0.01rem;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      span{
+        //width: 10px;
+        color: #cccccc;
+        font-size: 0.1rem;
+      }
+      .range{
+        -webkit-appearance: none;
+        height:1px;
+        //overflow: hidden;
+        //outline: none;
+        width: calc(100% - 80px);
+      }
+      .range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        position: relative;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ffffff;
       }
     }
     .footer{

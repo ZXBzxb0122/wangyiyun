@@ -19,3 +19,10 @@ export function getHome(){
     url:'/homepage/block/page'
   })
 }
+// 搜索
+export function getSearchInfo(data){
+  return service({
+    method:'GET',
+    url:`/cloudsearch?keywords=${data}`
+  })
+}

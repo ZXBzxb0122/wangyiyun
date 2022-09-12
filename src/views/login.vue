@@ -26,9 +26,15 @@ export default {
       if(res.data.code === 200){
         this.$store.commit('UpdateIsLogin',true)
         this.$store.commit('UpdateToken',res.data.token)
-        let result =await getUserInfo(res.data.account.id)
-        console.log(result);
-        this.$store.commit('UpdateUser',result)
+        // let result =await getUserInfo(res.data.account.id)
+        if(!res.data.token) return
+        localStorage.setItem("userId",res.data.account.id)
+        // console.log(result);
+        // this.$store.commit('UpdateUser',result)
+        //获取用户信息
+        if(!res.data.token) return
+        this.$store.dispatch("getLoginUserInfo")
+
         this.$router.push('/my')
       }else{
         alert('账户密码错误')

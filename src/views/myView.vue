@@ -1,16 +1,23 @@
 <template>
   <div class="userInfo">
     <div class="infoTop">
-      <svg t="1662428804186" class="icon" viewBox="0 0 1024 1024"
-           version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2393" width="32" height="32"><path d="M849.1 128 174.9 128c-25.9 0-46.9 21-46.9 46.9l0 34.2c0 25.9 21 46.9 46.9 46.9l674.2 0c25.9 0 46.9-21 46.9-46.9l0-34.2C896 149 875 128 849.1 128z" p-id="2394"></path><path d="M849.1 768 174.9 768c-25.9 0-46.9 21-46.9 46.9l0 34.2c0 25.9 21 46.9 46.9 46.9l674.2 0c25.9 0 46.9-21 46.9-46.9l0-34.2C896 789 875 768 849.1 768z" p-id="2395"></path><path d="M849.1 448 174.9 448c-25.9 0-46.9 21-46.9 46.9l0 34.2c0 25.9 21 46.9 46.9 46.9l674.2 0c25.9 0 46.9-21 46.9-46.9l0-34.2C896 469 875 448 849.1 448z" p-id="2396"></path></svg>
-      <div class="info">
-        <img :src="user.data.profile.avatarUrl" alt="" class="profileImg">
-        <span class="name">{{user.data.profile.nickname}}</span>
-      </div>
-      <svg t="1662428838156" class="icon" viewBox="0 0 1024 1024"
-           version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1657" width="32" height="32"><path d="M480 128a352 352 0 1 0 216.917333 629.248l136.917334 136.96 60.330666-60.373333-136.917333-136.96A352 352 0 0 0 480 128zM213.333333 480a266.666667 266.666667 0 1 1 533.333334 0 266.666667 266.666667 0 0 1-533.333334 0z" fill="#333333" p-id="1658"></path></svg>
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-danlieliebiao"></use>
+      </svg>
+      <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-sousuo1"></use>
+      </svg>
     </div>
-  </div>
+    <div class="info">
+      <img :src="user.data.profile.avatarUrl" alt="" class="profileImg">
+      <span class="name">{{user.data.profile.nickname}}</span>
+      <div class="infoCode">
+        <span>{{user.data.profile.follows}}<span>关注</span></span>
+        <span>{{user.data.profile.followeds}}<span>粉丝</span></span>
+        <span>Lv.{{user.data.level}}</span>
+      </div>
+    </div>
+    </div>
 </template>
 
 <script>
@@ -30,12 +37,48 @@ export default {
 <style lang="less" scoped>
 .userInfo{
   width: 100%;
+  height: 100%;
   padding: 0 10px;
+  background-color: #f6f6f6;
   .infoTop{
     height: 49px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  .info{
+    width: 100%;
+    height: 2.2rem;
+    background-color: rgba(255,255,255,.8);
+    border-radius: 0.2rem;
+    margin-top: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    img{
+      position: absolute;
+      top: -0.6rem;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+    }
+    .name{
+      margin-top: 0.2rem;
+      font-size: 0.4rem;
+    }
+    .infoCode{
+      margin-top: 0.2rem;
+      span{
+        padding: 0 6px;
+        color: rgba(0,0,0,.6);
+        border-right: 1px solid rgba(0,0,0,.1);
+      }
+      span:last-child{
+        border: none;
+      }
+    }
   }
 }
 </style>

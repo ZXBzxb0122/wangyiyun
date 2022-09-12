@@ -83,7 +83,7 @@ export default {
       }
     },
     concernClick(){
-      console.log(1);
+      // console.log(1);
       this.isConcern = !this.isConcern
       if (this.isConcern === true){
         alert('添加关注成功')

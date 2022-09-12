@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
-import {getInfo, getLoginInfo} from "@/request/api/login";
-import {getItemMusicLyric} from "@/request/api/musicItemList";
+import {getLoginInfo, getLoginUserInfo, getUserInfo} from "@/request/api/login";
+import { getItemMusicLyric } from "@/request/api/musicItemList";
 
 export default createStore({
   state: {
@@ -28,6 +28,7 @@ export default createStore({
     showDetail:false, //是否暂时音乐详情页
     musicLyric:{}, //歌词
     currentTime:0,//当前歌曲播放的时间
+    duration:0,//歌曲总时长
   },
   getters: {
 
@@ -38,17 +39,19 @@ export default createStore({
     },
     UpdateToken(state,value){
       state.token = value
+      //本地存储token
       localStorage.setItem('token',state.token)
     },
     UpdateUser(state,value){
       state.user = value
-      console.log(state.user);
+      // console.log(state.user);
     },
     UpdatePlayer(state,value){
       state.isPlayer = value
     },
     UpdatePlayerList(state,value){
       state.playerList = value
+      // console.log(state.playerList);
     },
     UpdatePlayerListIndex(state,value){
       state.playerListIndex = value
@@ -62,6 +65,9 @@ export default createStore({
     UpdateCurrentTime(state,value){
       state.currentTime = value
       // console.log(state.currentTime);
+    },
+    UpdateDuration(state,value){
+      state.duration = value
     }
   },
   actions: {
@@ -70,10 +76,13 @@ export default createStore({
       // console.log(res);
       return res
     },
-    // getCookies:async function(context,value){
-    //   let res = await getInfo(value)
-    //   context.state.Cookies = await res.data.cookie
-    // }
+    //获取用户信息
+    getLoginUserInfo:async function(context,value){
+      let id = localStorage.getItem('userId')
+      let res = await getUserInfo(id)
+      context.commit('UpdateUser',res)
+    },
+    //调用歌词列表
     getLyric:async function(context,value){
       let res = await getItemMusicLyric(value)
       // console.log(res);

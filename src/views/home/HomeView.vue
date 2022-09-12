@@ -2,9 +2,9 @@
   <div class="home">
     <van-pull-refresh v-model="loading" @refresh="onRefresh" success-text="刷新成功">
       <top-nav></top-nav>
-        <swiper></swiper>
-        <IconList></IconList>
-        <MusicList></MusicList>
+      <swiper></swiper>
+      <IconList></IconList>
+      <MusicList></MusicList>
     </van-pull-refresh>
   </div>
 </template>

@@ -61,7 +61,7 @@ export default {
 
 <style lang="less" scoped>
 .itemMusicList{
-  height: 100%;
+  height: 100vh;
   padding: 0 10px;
   border-top-left-radius: 0.1rem;
   border-top-right-radius: 0.1rem;
@@ -110,9 +110,10 @@ export default {
     }
   }
   .itemList{
-    //height: 49px;
+    height: calc(100vh - 49px);
     display: flex;
     flex-direction: column;
+    overflow: scroll;
     .item {
       height: 49px;
       display: flex;

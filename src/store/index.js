@@ -6,7 +6,7 @@ export default createStore({
   state: {
     isLogin:false, //判断是否登录
     isShowTabBar:true,
-    isShowPlayer:true,
+    isShowPlayer:false,
     token:'',
     user:{}, //用户信息
     playerList:[{ //播放列表

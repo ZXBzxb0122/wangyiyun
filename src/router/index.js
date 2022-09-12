@@ -48,11 +48,25 @@ const router = createRouter({
 })
 router.beforeEach((to,from)=>{
   // console.log(to);
-  if(to.path === '/login' || to.path === '/search'){
+  if(to.path === '/login'){
    store.state.isShowTabBar = false
-  }else store.state.isShowTabBar = to.path !== '/itemMusic';
-  if (to.path === '/login' || to.path === '/home' || to.path === '/my'){
+  }
+  if(to.path === '/my'){
     store.state.isShowPlayer = false
+    store.state.isShowTabBar = true
+  }
+  if(to.path === '/home'){
+    store.state.isShowPlayer = false
+    store.state.isShowTabBar = true
+  }
+  // else store.state.isShowTabBar = to.path !== '/itemMusic';
+  if(to.path === '/itemMusic'){
+    store.state.isShowTabBar = false
+    store.state.isShowPlayer = true
+  }
+  if (to.path === '/search'){
+    store.state.isShowTabBar = false
+    store.state.isShowPlayer = true
   }
 })
 export default router
